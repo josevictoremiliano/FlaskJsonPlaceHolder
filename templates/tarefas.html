@@ -1,0 +1,77 @@
+{% extends "template.html" %}
+{% block title %} Tarefas {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mt-5">
+                <h2>Tarefas</h2>
+            </div>
+            <div class="col-12">
+                <div class="d-flex gap-5">
+                    <a href="/" class="btn btn-dark">Voltar</a>
+                    <a href="/tarefas/new" class="btn btn-primary">Nova tarefa</a>
+                    <a href="#deleteTarefas" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTarefas">Deletar tarefa</a>
+                </div>
+            </div>
+            <div class="col-12 py-3">
+                {% if message %}
+                    <div class="alert {{class_alert}}" role="alert">
+                    {{ message }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tarefas in tarefas %}
+                            <tr>
+                                <th scope="row">{{ tarefas.id }}</th>
+                                <td>{{ tarefas.title }}</td>
+                                <td>{{ tarefas.description }}</td>
+                                <td>{{ tarefas.status }}</td>
+                                <td>
+                                    <a href="/tarefas/{{ tarefas.id }}" class="btn btn-primary">Ver</a>
+                                    <a href="/tarefas/{{ tarefas.id }}/edit" class="btn btn-warning">Editar</a>
+                                    <a href="#deleteTarefa" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTarefa" data-id="{{ tarefas.id }}">Deletar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteTarefa" tabindex="-1" aria-labelledby="deleteTarefaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteTarefaLabel">Deletar tarefa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Deseja realmente deletar a tarefa?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="/tarefas/{{ tarefas.id }}/deletar" class="btn btn-danger" id="deleteTarefaButton">Deletar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

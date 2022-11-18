@@ -88,23 +88,51 @@ def new_post():
 
     return render_template(template)
 
-@app.route("/albums")
-def albums():
-    template = "albums.html"
-    albums = requests.get(api_url + "albums").json()
-    return render_template(template, albums=albums)
-
-@app.route("/photos")
-def photos():
-    template = "photos.html"
-    photos = requests.get(api_url + "photos").json()
-    return render_template(template, photos=photos)
-
-@app.route("/todos")
+@app.route("/tarefas", methods=['GET', 'POST'])
 def todos():
-    template = "todos.html"
-    todos = requests.get(api_url + "todos").json()
-    return render_template(template, todos=todos)
+    template = "tarefas.html"
+    tarefas = requests.get(api_url + "todos").json()
+    return render_template(template, tarefas=tarefas)
+
+@app.route("/tarefas/new", methods=['GET', 'POST'])
+def new_tarefa():
+    template = "new_tarefa.html"
+
+    if request.method == 'POST':
+        title = request.form.get("title")
+        completed = request.form.get("description")
+        status = request.form.get("status")
+        user_id = request.form.get("user_id")
+        data = {
+            "title": title,
+            "completed": completed,
+            "status": status,
+            "userId": user_id
+        }
+        response = requests.post(api_url + "todos", data=data)
+        if response.status_code == 201:
+            print(response.status_code)
+            return render_template(template, message="Tarefa criada com sucesso!", class_alert="alert-success")
+        else:
+            print('Erro ao criar tarefa!')
+            print(response.status_code)
+            return render_template(template, message="Erro ao criar tarefa!", class_alert="alert-danger")
+
+    return render_template(template)
+
+@app.route("/tarefas/<int:tarefa_id>/delete", methods=['GET', 'POST'])
+def delete_tarefa(tarefa_id):
+    template = "tarefas.html"
+    tarefas = requests.get(api_url + "todos").json()
+    url = api_url + "todos/{}".format(tarefa_id)
+    if requests.get(url).status_code == 200:
+        requests.delete(url)
+        print(requests.delete(url).status_code)
+        return render_template(template, tarefas=tarefas, message="Tarefa apagada com sucesso!", class_alert="alert-success")
+    else:
+        print('Erro ao apagar tarefa!')
+        print(requests.delete(url).status_code)
+        return render_template(template, tarefas=tarefas, message="Erro ao apagar tarefa, talvez a tarefa não exista! ", class_alert="alert-danger")
 
 @app.route("/comments")
 def comments():
