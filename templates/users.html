@@ -1,17 +1,17 @@
 {% extends "template.html" %}
-{% block title %} Posts {% endblock %}
+{% block title %} Usuários {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col-12 mt-5">
-                <h2>Posts</h2>
+                <h2>Usuários</h2>
             </div>
             <div class="col-12">
                 <div class="d-flex gap-5">
                     <a href="/" class="btn btn-dark">Voltar</a>
-                    <a href="/posts/new" class="btn btn-primary">Novo Post</a>
-                    <a href="#deletePost" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePost">Deletar Post</a>
+                    <a href="/user/new" class="btn btn-primary">Novo usuário</a>
+                    <a href="#deleteuser" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePost">Deletar usuário</a>
                 </div>
             </div>
             <div class="col-12 py-3">
@@ -27,18 +27,22 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Post</th>
+                            <th scope="col">id</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for post in posts %}
-                        <tr>
-                            <th scope="row">{{post.id}}</th>
-                            <td>{{post.title}}</td>
-                            <td>{{post.body}}</td>
-                        </tr>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    <a href="/users/{{ user.id }}" class="btn btn-primary">Ver todos os detalhes</a>
+                                </td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -57,8 +61,8 @@
                 <div class="modal-body">
                     <form action="" method="POST">
                         <div class="mb-3">
-                            <label for="id_post_delete" class="form-label">ID do Post</label>
-                            <input type="text" class="form-control" id="id_post_delete" name="id_post_delete">
+                            <label for="id_user_delete" class="form-label">ID do usuário</label>
+                            <input type="text" class="form-control" id="id_user_delete" name="id_user_delete">
                         </div>
                         <button type="submit" class="btn btn-danger">Deletar</button>
                     </form>
