@@ -30,6 +30,49 @@ def users():
 
     return render_template(template, users=users)
 
+#criar um novo usuário do jsonplacehoder
+@app.route("/users/new", methods=['GET', 'POST'])
+def new_user():
+    template = "new_user.html"
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        username = request.form.get('username')
+        phone = request.form.get('phone')
+        website = request.form.get('website')
+        company_name = request.form.get('company_name')
+        eddress_street = request.form.get('eddress_street')
+        eddress_suite = request.form.get('eddress_suite')
+        eddress_city = request.form.get('eddress_city')
+        eddress_zipcode = request.form.get('eddress_zipcode')
+        eddress_geo_lat = request.form.get('eddress_geo_lat')
+        eddress_geo_lng = request.form.get('eddress_geo_lng')
+
+        data = {
+            "name": name,
+            "email": email,
+            "username": username,
+            "phone": phone,
+            "website": website,
+            "company": {
+                "name": company_name
+            },
+            "address": {
+                "street": eddress_street,
+                "suite": eddress_suite,
+                "city": eddress_city,
+                "zipcode": eddress_zipcode,
+                "geo": {
+                    "lat": eddress_geo_lat,
+                    "lng": eddress_geo_lng
+                }
+            }
+        }
+        requests.post(api_url + "users", data=data)
+        return render_template(template, message="Usuário criado com sucesso!", class_alert="alert-success")
+    return render_template(template)
+
+
 @app.route("/users/<int:user_id>")
 def user_details(user_id):
     template = "user_details.html"
@@ -120,7 +163,7 @@ def new_tarefa():
 
     return render_template(template)
 
-@app.route("/tarefas/<int:tarefa_id>/delete", methods=['GET', 'POST'])
+@app.route("/tarefas/<int:tarefa_id>/deletar", methods=['GET', 'POST'])
 def delete_tarefa(tarefa_id):
     template = "tarefas.html"
     tarefas = requests.get(api_url + "todos").json()
@@ -128,11 +171,14 @@ def delete_tarefa(tarefa_id):
     if requests.get(url).status_code == 200:
         requests.delete(url)
         print(requests.delete(url).status_code)
-        return render_template(template, tarefas=tarefas, message="Tarefa apagada com sucesso!", class_alert="alert-success")
+        code = requests.delete(url).status_code
+
+        return render_template(template, tarefas=tarefas, message="Tarefa apagada com sucesso! cod.: " + str(code), class_alert="alert-success")
     else:
         print('Erro ao apagar tarefa!')
         print(requests.delete(url).status_code)
-        return render_template(template, tarefas=tarefas, message="Erro ao apagar tarefa, talvez a tarefa não exista! ", class_alert="alert-danger")
+        code = requests.delete(url).status_code
+        return render_template(template, tarefas=tarefas, message="Erro ao apagar tarefa, talvez a tarefa não exista! cod.: " + str(code), class_alert="alert-danger")
 
 @app.route("/comments")
 def comments():
